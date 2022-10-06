@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: wordpress-deployment
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: wordpress
@@ -16,12 +17,32 @@ spec:
         image: wordpress:php7.3
         ports:
         - containerPort: 80
+        volumeMounts:
+          - name: volume-wp
+            mountPath: /var/www/html
         env:
         - name: WORDPRESS_DB_HOST
-          value: 
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: WORDPRESS_DB_HOST
         - name: WORDPRESS_DB_USER
-          value: 
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: WORDPRESS_DB_USER
         - name: WORDPRESS_DB_NAME
-          value: 
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: WORDPRESS_DB_NAME
         - name: WORDPRESS_DB_PASSWORD
-          value: 
+          valueFrom:
+            secretKeyRef:
+              name: wp-mysql-secret
+              key: MYSQL_DB_PASSWORD
+      
+      volumes:
+        - name: volume-wp
+          persistentVolumeClaim:
+            claimName: pvc-wordpress

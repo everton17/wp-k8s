@@ -14,14 +14,33 @@ spec:
       containers:
       - name: mariadb
         image: mariadb:10.6.4
+        volumeMounts:
+          - name: mysql-volume
+            mountPath: /var/lib/mysql
         ports:
         - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: 
+          valueFrom:
+            secretKeyRef:
+              name: wp-mysql-secret
+              key: MYSQL_ROOT_PASSWORD
         - name: MYSQL_DATABASE
-          value: 
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: WORDPRESS_DB_NAME
         - name: MYSQL_USER
-          value: 
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: WORDPRESS_DB_USER
         - name: MYSQL_PASSWORD
-          value: 
+          valueFrom:
+            secretKeyRef:
+              name: wp-mysql-secret
+              key: MYSQL_DB_PASSWORD
+      volumes:
+        - name: mysql-volume
+          persistentVolumeClaim:
+            claimName: pvc-mysql
