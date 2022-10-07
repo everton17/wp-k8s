@@ -26,6 +26,15 @@ spec:
         
 ##Politica de pull da imagem
         imagePullPolicy: Always
+
+##Definindo resources
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
+          limits:
+            memory: "500Mi"
+            cpu: "300m"
         
 ##Declaração ReadnessProbe - Check de quando o pod está pronto para receber trafego
         readinessProbe:
