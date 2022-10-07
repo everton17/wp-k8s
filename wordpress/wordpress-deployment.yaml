@@ -2,24 +2,67 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wordpress-deployment
+
+##Declaração das especificações do deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: wordpress
+
+##Declaração do template do deployment  
   template:
     metadata:
       labels:
         app: wordpress
+    
+##Especificação dos containers do pod
     spec:
       containers:
       - name: wordpress
         image: wordpress:php7.3
         ports:
         - containerPort: 80
+        
+##Politica de pull da imagem
+        imagePullPolicy: Always
+        
+##Declaração ReadnessProbe - Check de quando o pod está pronto para receber trafego
+        readinessProbe:
+          httpGet:
+            path: /wp-admin
+            port: 80
+            scheme: HTTP
+          timeoutSeconds: 1
+          failureThreshold: 3
+          periodSeconds: 5
+        
+##Declaração StartupProbe - Check de quando o pod está up
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          timeoutSeconds: 1
+          failureThreshold: 5
+          periodSeconds: 5
+        
+##Declaração LivenessProbe - Healthcheck para garantir que o container está saudavel, caso não esteja o pod é reiniciado
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          timeoutSeconds: 1
+          failureThreshold: 3
+          periodSeconds: 5
+
+##Declaração de volume e mounpoint no Pod
         volumeMounts:
           - name: volume-wp
             mountPath: /var/www/html
+        
+##Variáveis de ambiente utilizando configmap e secrets
         env:
         - name: WORDPRESS_DB_HOST
           valueFrom:
@@ -41,7 +84,8 @@ spec:
             secretKeyRef:
               name: wp-mysql-secret
               key: MYSQL_DB_PASSWORD
-      
+              
+##Declaração do volume disponivel para o pod
       volumes:
         - name: volume-wp
           persistentVolumeClaim:
