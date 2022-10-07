@@ -10,5 +10,6 @@ spec:
     storage: 500Mi
   accessModes:
     - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
   hostPath:
     path: /D/volumes/wp

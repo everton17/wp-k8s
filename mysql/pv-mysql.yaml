@@ -10,5 +10,6 @@ spec:
     storage: 200Mi
   accessModes:
     - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
   hostPath:
     path: /D/volumes/mysql

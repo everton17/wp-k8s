@@ -3,6 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: pvc-wordpress
 spec:
+  selector:
+    matchLabels:
+      type: local
   storageClassName: pv-wordpress
   accessModes:
   - ReadWriteOnce

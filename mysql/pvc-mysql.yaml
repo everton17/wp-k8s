@@ -3,6 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: pvc-mysql
 spec:
+  selector:
+    matchLabels:
+      type: local
   storageClassName: pv-mysql
   accessModes:
   - ReadWriteOnce
