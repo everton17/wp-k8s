@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: limit-resources-containers
+
+## Setando recurso maximo permitido de recursos para os containers dos PODs. 
+#### Setar essa configuração nivel de cluster evita que algum deployment sem resources estoure os recursos do cluster.
+spec:
+  limits:
+    - max:
+        cpu: "1000m"
+        memory: "1000Mi"
+      min:
+        cpu: "100m"
+        memory: "100Mi"
+      default:
+        cpu: "250m"
+        memory: "200Mi"
+      type: Container
