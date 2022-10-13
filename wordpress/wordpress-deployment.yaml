@@ -9,12 +9,14 @@ spec:
   selector:
     matchLabels:
       app: wordpress
+      role: wp-app
 
 ##Declaração do template do deployment  
   template:
     metadata:
       labels:
         app: wordpress
+        role: wp-app
     
 ##Especificação dos containers do pod
     spec:
@@ -37,34 +39,34 @@ spec:
             cpu: "300m"
         
 ##Declaração ReadnessProbe - Check de quando o pod está pronto para receber trafego
-        readinessProbe:
-          httpGet:
-            path: /wp-admin
-            port: 80
-            scheme: HTTP
-          timeoutSeconds: 1
-          failureThreshold: 3
-          periodSeconds: 5
-        
+#        readinessProbe:
+#          httpGet:
+#            path: /wp-admin
+#            port: 80
+#            scheme: HTTP
+#          timeoutSeconds: 1
+#          failureThreshold: 3
+#          periodSeconds: 5
+#        
 ##Declaração StartupProbe - Check de quando o pod está up
-        startupProbe:
-          httpGet:
-            path: /
-            port: 80
-            scheme: HTTP
-          timeoutSeconds: 1
-          failureThreshold: 5
-          periodSeconds: 5
+#        startupProbe:
+#          httpGet:
+#            path: /
+#            port: 80
+#            scheme: HTTP
+#          timeoutSeconds: 1
+#          failureThreshold: 5
+#          periodSeconds: 5
         
 ##Declaração LivenessProbe - Healthcheck para garantir que o container está saudavel, caso não esteja o pod é reiniciado
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-            scheme: HTTP
-          timeoutSeconds: 1
-          failureThreshold: 3
-          periodSeconds: 5
+#        livenessProbe:
+#          httpGet:
+#            path: /
+#            port: 80
+#            scheme: HTTP
+#          timeoutSeconds: 1
+#          failureThreshold: 3
+#          periodSeconds: 5
 
 ##Declaração de volume e mounpoint no Pod
         volumeMounts:
