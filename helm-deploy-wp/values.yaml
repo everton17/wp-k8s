@@ -1,0 +1,22 @@
+# Default values for helm-deploy-wp.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+mariadb:
+  image:
+    name: mariadb
+    tag: 10.6.4
+  credentials:
+    rootPassword: 
+    wpPassword: 
+    user: wordpress
+  db:
+    name: wordpress
+  network:
+    policy:
+      namespace: default
+
+wordpress:
+  image:
+    name: wordpress
+    tag: php7.3

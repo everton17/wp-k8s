@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-wordpress-deployment
+
+##Declaração das especificações do deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-wordpress
+
+##Declaração do template do deployment  
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-wordpress
+##Especificação dos containers do pod
+    spec:
+      containers:
+      - name: wordpress
+        image: {{ .Values.wordpress.image.name }}:{{ .Values.wordpress.image.tag }}
+        ports:
+        - containerPort: 80
+        
+##Politica de pull da imagem
+        imagePullPolicy: Always
+
+##Definindo resources
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
+          limits:
+            memory: "500Mi"
+            cpu: "300m"
+        
+##Declaração ReadnessProbe - Check de quando o pod está pronto para receber trafego
+        readinessProbe:
+          httpGet:
+            path: /wp-admin
+            port: 80
+            scheme: HTTP
+          timeoutSeconds: 1
+          failureThreshold: 3
+          periodSeconds: 5
+        
+##Declaração StartupProbe - Check de quando o pod está up
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          timeoutSeconds: 1
+          failureThreshold: 5
+          periodSeconds: 5
+
+##Declaração LivenessProbe - Healthcheck para garantir que o container está saudavel, caso não esteja o pod é reiniciado
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          timeoutSeconds: 1
+          failureThreshold: 3
+          periodSeconds: 5
+
+##Declaração de volume e mounpoint no Pod
+        volumeMounts:
+          - name: volume-wp
+            mountPath: /var/www/html
+        
+##Variáveis de ambiente utilizando configmap e secrets
+        env:
+        - name: WORDPRESS_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-mysql-configmap
+              key: WORDPRESS_DB_HOST
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-mysql-configmap
+              key: WORDPRESS_DB_USER
+        - name: WORDPRESS_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-mysql-configmap
+              key: WORDPRESS_DB_NAME
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-wp-mysql-secret
+              key: MYSQL_DB_PASSWORD
+              
+##Declaração do volume disponivel para o pod
+      volumes:
+        - name: volume-wp
+          persistentVolumeClaim:
+            claimName: pvc-wordpress
