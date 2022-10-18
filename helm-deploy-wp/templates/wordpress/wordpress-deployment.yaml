@@ -73,26 +73,41 @@ spec:
 ##Variáveis de ambiente utilizando configmap e secrets
         env:
         - name: WORDPRESS_DB_HOST
+          {{- if empty .Values.mariadb.host }}
           valueFrom:
             configMapKeyRef:
               name: {{ .Release.Name }}-mysql-configmap
               key: WORDPRESS_DB_HOST
+          {{- else }}
+          value: {{ .Values.mariadb.host }}
+          {{- end }}
         - name: WORDPRESS_DB_USER
+          {{- if empty .Values.mariadb.credentials.user }}
           valueFrom:
             configMapKeyRef:
               name: {{ .Release.Name }}-mysql-configmap
               key: WORDPRESS_DB_USER
+          {{- else }}
+          value: {{ .Values.mariadb.credentials.user }}
+          {{- end }}
         - name: WORDPRESS_DB_NAME
+          {{- if empty .Values.mariadb.db.name }}
           valueFrom:
             configMapKeyRef:
               name: {{ .Release.Name }}-mysql-configmap
               key: WORDPRESS_DB_NAME
+          {{- else }}
+          value: {{ .Values.mariadb.db.name }}
+          {{- end }}
         - name: WORDPRESS_DB_PASSWORD
+          {{- if empty .Values.mariadb.credentials.wpPassword }}
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-wp-mysql-secret
               key: MYSQL_DB_PASSWORD
-              
+          {{- else }}
+          value: {{ .Values.mariadb.credentials.wpPassword }}
+          {{- end }}
 ##Declaração do volume disponivel para o pod
       volumes:
         - name: volume-wp

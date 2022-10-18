@@ -15,6 +15,7 @@ mariadb:
   network:
     policy:
       namespace: default
+  host: 
 
 wordpress:
   image:

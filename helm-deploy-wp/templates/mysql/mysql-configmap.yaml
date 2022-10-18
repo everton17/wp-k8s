@@ -1,8 +1,16 @@
+{{- if or (empty .Values.mariadb.host) (empty .Values.mariadb.credentials.user) (empty .Values.mariadb.db.name)}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-mysql-configmap
 data:
+  {{- if empty .Values.mariadb.host }}
   WORDPRESS_DB_HOST: {{ .Release.Name }}-mariadb-service
-  WORDPRESS_DB_USER: {{ .Values.mariadb.credentials.user }}
-  WORDPRESS_DB_NAME: {{ .Values.mariadb.db.name }}
+  {{- end }}
+  {{- if empty .Values.mariadb.credentials.user }}
+  WORDPRESS_DB_USER: user
+  {{- end }}
+  {{- if empty .Values.mariadb.db.name }}
+  WORDPRESS_DB_NAME: database
+  {{- end }}
+{{- end }}

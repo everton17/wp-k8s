@@ -27,26 +27,42 @@ spec:
         ports:
         - containerPort: 3306
         env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-wp-mysql-secret
-              key: MYSQL_ROOT_PASSWORD
         - name: MYSQL_DATABASE
+          {{- if empty .Values.mariadb.db.name }}
           valueFrom:
             configMapKeyRef:
               name: {{ .Release.Name }}-mysql-configmap
               key: WORDPRESS_DB_NAME
+          {{- else }}
+          value: {{ .Values.mariadb.db.name }}
+          {{- end }}
         - name: MYSQL_USER
+          {{- if empty .Values.mariadb.credentials.user }}
           valueFrom:
             configMapKeyRef:
               name: {{ .Release.Name }}-mysql-configmap
               key: WORDPRESS_DB_USER
+          {{- else }}
+          value: {{ .Values.mariadb.credentials.user }}
+          {{- end }}
+        - name: MYSQL_ROOT_PASSWORD
+          {{- if empty .Values.mariadb.credentials.rootPassword }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-wp-mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+          {{- else }}
+          value: {{ .Values.mariadb.credentials.rootPassword }}
+          {{- end }}
         - name: MYSQL_PASSWORD
+          {{- if empty .Values.mariadb.credentials.wpPassword }}
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-wp-mysql-secret
               key: MYSQL_DB_PASSWORD
+          {{- else }}
+          value: {{ .Values.mariadb.credentials.wpPassword }}
+          {{- end }}
       volumes:
         - name: mysql-volume
           persistentVolumeClaim:
