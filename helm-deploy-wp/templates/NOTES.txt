@@ -1,0 +1,3 @@
+A release {{ .Release.Name }} foi criada com sucesso.
+
+Seu Wordpress ja está pronto!! 😎🚀
