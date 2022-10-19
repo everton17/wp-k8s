@@ -5,10 +5,17 @@ metadata:
 
 ##Declaração das especificações do deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: {{ template "wordpress.labelApp" . }}
+
+##Declaração da estratégia de deploy 
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0%
 
 ##Declaração do template do deployment  
   template:

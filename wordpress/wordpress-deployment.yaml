@@ -10,6 +10,13 @@ spec:
     matchLabels:
       app: wordpress
 
+##Declaração da estratégia de deploy 
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0%
+
 ##Declaração do template do deployment  
   template:
     metadata:
