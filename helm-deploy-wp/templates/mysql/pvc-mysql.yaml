@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-mysql
+  name: {{ template "mariadb.pvcName" . }}
 spec:
   selector:
     matchLabels:
       type: local
-  storageClassName: pv-mysql
+  storageClassName: {{ template "mariadb.storageclassName" . }}
   accessModes:
   - ReadWriteOnce
   resources:

@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-wordpress
+  name: {{ template "wordpress.pvcName" . }}
 spec:
   selector:
     matchLabels:
       type: local
-  storageClassName: pv-wordpress
+  storageClassName: {{ template "wordpress.storageclassName" . }}
   accessModes:
   - ReadWriteOnce
   resources:

@@ -21,3 +21,6 @@ wordpress:
   image:
     name: wordpress
     tag: php7.3
+  ingress:
+  - localhost
+  - wp.local

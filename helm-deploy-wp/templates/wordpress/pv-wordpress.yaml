@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv-wordpress
+  name: {{ template "wordpress.pvName" . }}
   labels:
     type: local
 spec:
-  storageClassName: pv-wordpress
+  storageClassName: {{ template "wordpress.storageclassName" . }}
   capacity:
     storage: 500Mi
   accessModes:

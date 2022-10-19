@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-wordpress-deployment
+  name: {{ template "wordpress.deploymentName" . }}
 
 ##Declaração das especificações do deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-wordpress
+      app: {{ template "wordpress.labelApp" . }}
 
 ##Declaração do template do deployment  
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-wordpress
+        app: {{ template "wordpress.labelApp" . }}
 ##Especificação dos containers do pod
     spec:
       containers:
@@ -76,7 +76,7 @@ spec:
           {{- if empty .Values.mariadb.host }}
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-mysql-configmap
+              name: {{ template "mariadb.configmapName" . }}
               key: WORDPRESS_DB_HOST
           {{- else }}
           value: {{ .Values.mariadb.host }}
@@ -85,7 +85,7 @@ spec:
           {{- if empty .Values.mariadb.credentials.user }}
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-mysql-configmap
+              name: {{ template "mariadb.configmapName" . }}
               key: WORDPRESS_DB_USER
           {{- else }}
           value: {{ .Values.mariadb.credentials.user }}
@@ -94,7 +94,7 @@ spec:
           {{- if empty .Values.mariadb.db.name }}
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-mysql-configmap
+              name: {{ template "mariadb.configmapName" . }}
               key: WORDPRESS_DB_NAME
           {{- else }}
           value: {{ .Values.mariadb.db.name }}
@@ -103,7 +103,7 @@ spec:
           {{- if empty .Values.mariadb.credentials.wpPassword }}
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-wp-mysql-secret
+              name: {{ template "mariadb.secretName" . }}
               key: MYSQL_DB_PASSWORD
           {{- else }}
           value: {{ .Values.mariadb.credentials.wpPassword }}
@@ -112,4 +112,4 @@ spec:
       volumes:
         - name: volume-wp
           persistentVolumeClaim:
-            claimName: pvc-wordpress
+            claimName: {{ template "wordpress.pvcName" . }}

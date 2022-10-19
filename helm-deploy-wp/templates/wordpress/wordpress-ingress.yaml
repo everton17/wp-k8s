@@ -1,15 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-wp-ingress
+  name: {{ template "wordpress.ingressName" . }}
 spec:
   rules:
-  - http:
+  {{- range .Values.wordpress.ingress }}
+  - host: {{ . }}
+    http:
       paths:
       - pathType: Prefix
         path: "/"
         backend:
           service:
-            name: {{ .Release.Name }}-wordpress-service
+            name: {{ template "wordpress.serviceName" $ }}
             port: 
               number: 80
+  {{- end }}
